@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Expense Tracker</h1>
+        <p class="total">Total: <span id="total-amount">₹0.00</span></p>
+        <p id="form-error" class="error" hidden></p>
+
+        <form id="expense-form">
+            <input type="hidden" id="expense-id" name="id">
+            <label>
+                Category
+                <input type="text" id="category" name="category" placeholder="Food, Travel, Bills…" required>
+            </label>
+            <label>
+                Amount (₹)
+                <input type="number" id="amount" name="amount" placeholder="0.00" min="0.01" step="0.01" required>
+            </label>
+            <label>
+                Date
+                <input type="date" id="date" name="date" required>
+            </label>
+            <label>
+                Description
+                <input type="text" id="description" name="description" placeholder="Optional">
+            </label>
+            <div class="form-actions">
+                <button type="submit" id="submit-btn">Add Expense</button>
+                <button type="button" id="cancel-edit" hidden>Cancel</button>
+            </div>
+        </form>
+
+        <h2>All Expenses</h2>
+        <ul id="expense-list"></ul>
+        <p id="empty-state" class="empty">No expenses yet.</p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #222;
+}
+
+.container {
+    width: min(720px, 90%);
+    margin: 32px auto;
+}
+
+h1, h2 {
+    margin: 0 0 12px;
+}
+
+.total {
+    font-size: 1.1rem;
+    margin: 0 0 20px;
+}
+
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    background-color: #35424a;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2b363c;
+}
+
+button.danger {
+    background-color: #b42318;
+}
+
+button.danger:hover {
+    background-color: #912018;
+}
+
+#cancel-edit {
+    background-color: #6b7280;
+}
+
+#expense-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+}
+
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+}
+
+.meta {
+    display: block;
+    color: #555;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.item-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.empty {
+    color: #666;
+}
+
+.error {
+    color: #b42318;
+    margin-bottom: 12px;
+}
