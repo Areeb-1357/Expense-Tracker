@@ -2,12 +2,11 @@ from contextlib import asynccontextmanager
 import os
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router as expense_router
-from app.auth import create_token, verify_password
 from app.database import Base, engine
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent
@@ -21,12 +20,6 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="Expense Tracker", lifespan=lifespan)
 
-
-@app.post("/api/auth/login")
-def login(payload: dict):
-    if not verify_password(str(payload.get("password", ""))):
-        raise HTTPException(status_code=401, detail="Incorrect password")
-    return {"token": create_token()}
 
 app.add_middleware(
     CORSMiddleware,

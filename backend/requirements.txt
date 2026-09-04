@@ -3,5 +3,4 @@ uvicorn[standard]
 pydantic
 sqlalchemy
 python-multipart
-PyJWT
 psycopg[binary]
