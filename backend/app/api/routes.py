@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,10 +11,18 @@ from app.schemas.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
 router = APIRouter()
 
 
+def _normalize_category(value: str) -> str:
+    text = (value or "").strip()
+    if not text:
+        return "Other"
+    text = re.sub(r"\s+", " ", text)
+    return text.title()
+
+
 def _to_row(payload: ExpenseCreate) -> dict:
     return {
         "date": payload.date.isoformat(),
-        "category": payload.category.strip(),
+        "category": _normalize_category(payload.category),
         "amount": payload.amount,
         "description": (payload.description or "").strip() or None,
     }
@@ -53,7 +62,7 @@ def update_expense(
     if "date" in data and data["date"] is not None:
         data["date"] = data["date"].isoformat()
     if "category" in data and data["category"] is not None:
-        data["category"] = data["category"].strip()
+        data["category"] = _normalize_category(data["category"])
     if "description" in data and data["description"] is not None:
         data["description"] = data["description"].strip() or None
 

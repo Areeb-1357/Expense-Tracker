@@ -1,45 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Expense Tracker</h1>
-        <p class="total">Total: <span id="total-amount">₹0.00</span></p>
-        <p id="form-error" class="error" hidden></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FluxLedger | Expense Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="orb orb-three"></div>
 
-        <form id="expense-form">
-            <input type="hidden" id="expense-id" name="id">
-            <label>
-                Category
-                <input type="text" id="category" name="category" placeholder="Food, Travel, Bills…" required>
-            </label>
-            <label>
-                Amount (₹)
-                <input type="number" id="amount" name="amount" placeholder="0.00" min="0.01" step="0.01" required>
-            </label>
-            <label>
-                Date
-                <input type="date" id="date" name="date" required>
-            </label>
-            <label>
-                Description
-                <input type="text" id="description" name="description" placeholder="Optional">
-            </label>
-            <div class="form-actions">
-                <button type="submit" id="submit-btn">Add Expense</button>
-                <button type="button" id="cancel-edit" hidden>Cancel</button>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-group">
+          <div class="brand-mark">F</div>
+          <div>
+            <p class="eyebrow">Smart budget planner</p>
+            <h1>FluxLedger</h1>
+          </div>
+        </div>
+
+        <div class="topbar-pill">
+          <span class="pill-label">Live balance</span>
+          <strong id="live-balance">$0.00</strong>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel form-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-tag">Track spending</p>
+              <h2>Add a new expense</h2>
             </div>
-        </form>
+          </div>
 
-        <h2>All Expenses</h2>
-        <ul id="expense-list"></ul>
-        <p id="empty-state" class="empty">No expenses yet.</p>
+          <form id="expense-form" class="expense-form">
+            <input type="hidden" id="expense-id" />
+
+            <div class="input-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" name="date" required />
+            </div>
+
+            <div class="input-group">
+              <label for="category">Category</label>
+              <input type="text" id="category" name="category" placeholder="Food, rent, travel..." required />
+            </div>
+
+            <div class="input-group">
+              <label for="amount">Amount</label>
+              <input type="number" id="amount" name="amount" step="0.01" min="0" placeholder="0.00" required />
+            </div>
+
+            <div class="input-group">
+              <label for="description">Note</label>
+              <input type="text" id="description" name="description" placeholder="Groceries, fuel, rent..." />
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="submit-btn" class="primary-btn">Add Expense</button>
+              <button type="button" id="cancel-edit" class="secondary-btn" hidden>Cancel</button>
+            </div>
+          </form>
+
+          <div id="form-error" class="form-error" hidden></div>
+        </section>
+
+        <aside class="panel summary-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-tag">Overview</p>
+              <h2>Money snapshot</h2>
+            </div>
+          </div>
+          <div id="summary" class="summary-box"></div>
+        </aside>
+
+        <section class="panel list-panel">
+          <div class="list-header">
+            <div>
+              <p class="section-tag">Activity</p>
+              <h2>Recent expenses</h2>
+            </div>
+            <span id="transaction-count" class="pill">0 entries</span>
+          </div>
+
+          <div id="empty-state" class="empty-state">
+            No expenses yet. Add the first one and start shaping your spending story.
+          </div>
+
+          <ul id="expense-list" class="expense-list"></ul>
+        </section>
+      </main>
     </div>
-    <script src="app.js"></script>
-</body>
+
+    <script src="./app.js"></script>
+  </body>
 </html>
