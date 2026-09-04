@@ -23,13 +23,13 @@ Replace the placeholder above with the GitHub Pages URL after deployment.
 
 ## GitHub Pages
 
-The `frontend` folder is a static HTML/CSS/JavaScript app and can be published with GitHub Pages.
+The root `index.html` file and its CSS/JavaScript assets form the static app published with GitHub Pages.
 
 1. Push the project to GitHub.
 2. Open the repository's **Settings** tab.
 3. Select **Pages** under **Code and automation**.
 4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select the `main` branch and the `/frontend` folder, then select **Save**.
+5. Select the `main` branch and the `/ (root)` folder, then select **Save**.
 6. Open the generated Pages URL and replace the placeholder in this README.
 
 GitHub Pages cannot run the FastAPI server. On Pages, expenses are saved in the browser using `localStorage`, so data is specific to that browser and device. Use the local backend setup below when you need SQLite persistence and API access.
@@ -65,7 +65,9 @@ Expense fields are `date` (`YYYY-MM-DD`), `category`, `amount` (number greater t
 ## Project Structure
 
 ```text
-frontend/   Static GitHub Pages app
+index.html  Static GitHub Pages entry point
+app.js      Frontend behavior and browser-storage fallback
+styles.css  Frontend visual design
 backend/    FastAPI application and SQLite persistence
 tests/      Backend API tests
 ```

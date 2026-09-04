@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.routes import router as expense_router
 from app.database import Base, engine
 
-FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
+FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 @asynccontextmanager
