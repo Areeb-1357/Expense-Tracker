@@ -4,6 +4,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.auth import require_owner
 from app.database import get_db
 from app.models.expense import Expense
 from app.schemas.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
@@ -29,12 +30,12 @@ def _to_row(payload: ExpenseCreate) -> dict:
 
 
 @router.get("/expenses", response_model=List[ExpenseResponse])
-def list_expenses(db: Session = Depends(get_db)):
+def list_expenses(_: str = Depends(require_owner), db: Session = Depends(get_db)):
     return db.query(Expense).order_by(Expense.id.desc()).all()
 
 
 @router.get("/expenses/{expense_id}", response_model=ExpenseResponse)
-def get_expense(expense_id: int, db: Session = Depends(get_db)):
+def get_expense(expense_id: int, _: str = Depends(require_owner), db: Session = Depends(get_db)):
     expense = db.query(Expense).filter(Expense.id == expense_id).first()
     if not expense:
         raise HTTPException(status_code=404, detail="Expense not found")
@@ -42,7 +43,7 @@ def get_expense(expense_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/expenses", response_model=ExpenseResponse, status_code=201)
-def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
+def add_expense(expense: ExpenseCreate, _: str = Depends(require_owner), db: Session = Depends(get_db)):
     row = Expense(**_to_row(expense))
     db.add(row)
     db.commit()
@@ -52,7 +53,10 @@ def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
 
 @router.put("/expenses/{expense_id}", response_model=ExpenseResponse)
 def update_expense(
-    expense_id: int, payload: ExpenseUpdate, db: Session = Depends(get_db)
+    expense_id: int,
+    payload: ExpenseUpdate,
+    _: str = Depends(require_owner),
+    db: Session = Depends(get_db),
 ):
     expense = db.query(Expense).filter(Expense.id == expense_id).first()
     if not expense:
@@ -75,7 +79,7 @@ def update_expense(
 
 
 @router.delete("/expenses/{expense_id}", response_model=ExpenseResponse)
-def delete_expense(expense_id: int, db: Session = Depends(get_db)):
+def delete_expense(expense_id: int, _: str = Depends(require_owner), db: Session = Depends(get_db)):
     expense = db.query(Expense).filter(Expense.id == expense_id).first()
     if not expense:
         raise HTTPException(status_code=404, detail="Expense not found")
