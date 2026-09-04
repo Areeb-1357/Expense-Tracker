@@ -30,11 +30,12 @@ tests/      Automated tests
 
 ## Deploying the API
 
-GitHub Pages hosts the static frontend only. The `render.yaml` file deploys the FastAPI backend and PostgreSQL database on Render.
+GitHub Pages hosts the static frontend only. The `render.yaml` file deploys the FastAPI backend on Render. Use a free Supabase PostgreSQL project for the database.
 
 1. In Render, choose **New > Blueprint** and connect this repository.
-2. Set the `APP_PASSWORD` secret when Render asks for it.
-3. Copy the created web service URL and replace the API URL fallback in `app.js` with `<your-render-url>/api`.
-4. Commit and push the frontend change to GitHub Pages.
+2. Create a free Supabase project and copy its PostgreSQL connection string.
+3. Set `APP_PASSWORD` and `DATABASE_URL` in Render. Use the Supabase connection string for `DATABASE_URL`.
+4. Copy the created web service URL and replace the API URL fallback in `app.js` with `<your-render-url>/api`.
+5. Commit and push the frontend change to GitHub Pages.
 
 Expenses saved before sign-in remain in the original browser's local storage and can be entered into the new account after deployment.

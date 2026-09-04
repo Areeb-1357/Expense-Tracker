@@ -10,13 +10,6 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: expense-tracker-db
-          property: connectionString
+        sync: false
       - key: FRONTEND_ORIGIN
         value: https://areeb-1357.github.io
-
-databases:
-  - name: expense-tracker-db
-    databaseName: expenses
-    user: expense_tracker
