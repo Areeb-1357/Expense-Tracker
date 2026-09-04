@@ -3,27 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FluxLedger | Expense Tracker</title>
+    <title>Expense Tracker</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="orb orb-one"></div>
-    <div class="orb orb-two"></div>
-    <div class="orb orb-three"></div>
-
     <div class="app-shell">
       <header class="topbar">
         <div class="brand-group">
-          <div class="brand-mark">F</div>
+          <div class="brand-mark">₹</div>
           <div>
-            <p class="eyebrow">Smart budget planner</p>
-            <h1>FluxLedger</h1>
+            <p class="eyebrow">Daily spending</p>
+            <h1>Expense Tracker</h1>
           </div>
         </div>
 
-        <div class="topbar-pill">
-          <span class="pill-label">Live balance</span>
-          <strong id="live-balance">$0.00</strong>
+        <div class="topbar-actions">
+          <span class="mini-tag positive">-12% vs last month</span>
+          <div class="topbar-pill">
+            <span class="pill-label">This month</span>
+            <strong id="live-balance">₹0.00</strong>
+          </div>
         </div>
       </header>
 
@@ -34,6 +33,12 @@
               <p class="section-tag">Track spending</p>
               <h2>Add a new expense</h2>
             </div>
+          </div>
+
+          <div class="insight-row">
+            <span class="mini-tag neutral">Smart planner</span>
+            <span class="mini-tag highlight">Budget mode</span>
+            <span class="mini-tag warm">Cash flow</span>
           </div>
 
           <form id="expense-form" class="expense-form">

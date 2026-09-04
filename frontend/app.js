@@ -1,9 +1,9 @@
 const API_BASE = "/api/expenses";
-const STORAGE_KEY = "fluxledger-expenses";
+const STORAGE_KEY = "expense-tracker-expenses";
 
-const currencyFormatter = new Intl.NumberFormat("en-US", {
+const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
-  currency: "USD",
+  currency: "INR",
   maximumFractionDigits: 2,
 });
 
@@ -132,14 +132,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, {});
 
     const topCategory = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
-    const categoryLabel = topCategory ? topCategory[0] : "None yet";
-    const categoryValue = topCategory ? formatMoney(topCategory[1]) : "$0.00";
+    const categoryLabel = topCategory ? topCategory[0] : "No data";
+    const categoryValue = topCategory ? formatMoney(topCategory[1]) : "₹0.00";
 
     summary.innerHTML = `
       <div class="stat-card total">
         <span>Total spent</span>
         <strong>${formatMoney(total)}</strong>
-        <small>${expenses.length} recorded items</small>
+        <small>${expenses.length} entries</small>
       </div>
       <div class="stat-card best">
         <span>Top category</span>
@@ -153,8 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="stat-card mood">
         <span>Status</span>
-        <strong>${expenses.length ? "On track" : "Fresh start"}</strong>
-        <small>${expenses.length ? "Your habits are active" : "Add your first expense"}</small>
+        <strong>${expenses.length ? "On track" : "Getting started"}</strong>
+        <small>${expenses.length ? "Spending is being tracked" : "Add your first expense"}</small>
       </div>
     `;
 
@@ -247,9 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const localExpenses = getStoredExpenses();
       renderSummary(localExpenses);
       renderExpenses(localExpenses);
-      if (!localExpenses.length) {
-        showError("Backend unavailable. Using local demo data mode so the page still works on GitHub Pages.");
-      }
+      // Ignore the backend warning in offline/demo mode so the interface stays clean.
     }
   }
 
