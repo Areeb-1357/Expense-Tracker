@@ -223,6 +223,14 @@ h2 {
   margin-bottom: 18px;
 }
 
+.list-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .insight-row {
   display: flex;
   flex-wrap: wrap;

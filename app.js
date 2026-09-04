@@ -78,6 +78,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const liveBalance = document.getElementById("live-balance");
   const summary = document.getElementById("summary");
   const transactionCount = document.getElementById("transaction-count");
+  const exportBtn = document.getElementById("export-btn");
+  const importBtn = document.getElementById("import-btn");
+  const importFile = document.getElementById("import-file");
   if (!dateInput.value) {
     dateInput.value = new Date().toISOString().slice(0, 10);
   }
@@ -234,6 +237,48 @@ document.addEventListener("DOMContentLoaded", () => {
     saveStoredExpenses(next);
     return next;
   }
+
+  function exportExpenses() {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      expenses: getStoredExpenses(),
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "expense-tracker-backup.json";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  async function importExpenses(file) {
+    try {
+      const data = JSON.parse(await file.text());
+      const imported = Array.isArray(data) ? data : data.expenses;
+      if (!Array.isArray(imported)) {
+        throw new Error("Backup format is invalid");
+      }
+
+      const expenses = imported.filter(
+        (expense) => expense && expense.category && expense.date && Number(expense.amount) > 0
+      );
+      saveStoredExpenses(expenses);
+      renderSummary(expenses);
+      renderExpenses(expenses);
+      clearError();
+    } catch (error) {
+      showError(`Import failed: ${error.message}`);
+    }
+  }
+
+  exportBtn.addEventListener("click", exportExpenses);
+  importBtn.addEventListener("click", () => importFile.click());
+  importFile.addEventListener("change", async () => {
+    if (importFile.files[0]) {
+      await importExpenses(importFile.files[0]);
+      importFile.value = "";
+    }
+  });
 
   async function loadExpenses() {
     try {

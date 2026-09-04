@@ -89,7 +89,12 @@
               <p class="section-tag">Activity</p>
               <h2>Recent expenses</h2>
             </div>
-            <span id="transaction-count" class="pill">0 entries</span>
+            <div class="list-tools">
+              <button type="button" id="export-btn" class="item-btn">Export</button>
+              <button type="button" id="import-btn" class="item-btn">Import</button>
+              <input type="file" id="import-file" accept="application/json,.json" hidden />
+              <span id="transaction-count" class="pill">0 entries</span>
+            </div>
           </div>
 
           <div id="empty-state" class="empty-state">
