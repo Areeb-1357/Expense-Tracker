@@ -1,5 +1,7 @@
-const API_BASE = "/api/expenses";
+const API_BASE = window.EXPENSE_API_URL || "/api";
 const STORAGE_KEY = "expense-tracker-expenses";
+const AUTH_TOKEN_KEY = "expense-tracker-token";
+const MIGRATION_KEY = "expense-tracker-local-migrated";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -41,8 +43,13 @@ function categoryIcon(category) {
 }
 
 async function request(url, options = {}) {
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
   const response = await fetch(url, {
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    },
     ...options,
   });
 
@@ -56,7 +63,9 @@ async function request(url, options = {}) {
     } catch {
       // ignore parse errors
     }
-    throw new Error(detail);
+    const error = new Error(detail);
+    error.status = response.status;
+    throw error;
   }
 
   if (response.status === 204) {
@@ -78,6 +87,72 @@ document.addEventListener("DOMContentLoaded", () => {
   const liveBalance = document.getElementById("live-balance");
   const summary = document.getElementById("summary");
   const transactionCount = document.getElementById("transaction-count");
+  const authPanel = document.getElementById("auth-panel");
+  const authForm = document.getElementById("auth-form");
+  const authPassword = document.getElementById("auth-password");
+  const authError = document.getElementById("auth-error");
+  const logoutBtn = document.getElementById("logout-btn");
+  const dashboard = document.querySelector(".dashboard");
+
+  function setAuthenticated(authenticated) {
+    authPanel.hidden = authenticated;
+    dashboard.hidden = !authenticated;
+    logoutBtn.hidden = !authenticated;
+  }
+
+  function signOut() {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    setAuthenticated(false);
+    authPassword.value = "";
+  }
+
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    authError.hidden = true;
+    try {
+      const result = await request(`${API_BASE}/auth/login`, {
+        method: "POST",
+        body: JSON.stringify({ password: authPassword.value }),
+      });
+      localStorage.setItem(AUTH_TOKEN_KEY, result.token);
+      setAuthenticated(true);
+      await migrateLocalExpenses();
+      await loadExpenses();
+    } catch (error) {
+      authError.hidden = false;
+      authError.textContent = error.message;
+    }
+  });
+
+  logoutBtn.addEventListener("click", signOut);
+
+  async function migrateLocalExpenses() {
+    if (localStorage.getItem(MIGRATION_KEY)) {
+      return;
+    }
+
+    const localExpenses = getStoredExpenses();
+    if (!localExpenses.length) {
+      localStorage.setItem(MIGRATION_KEY, "true");
+      return;
+    }
+
+    const remoteExpenses = await request(`${API_BASE}/expenses`);
+    if (!remoteExpenses.length) {
+      for (const expense of localExpenses) {
+        await request(`${API_BASE}/expenses`, {
+          method: "POST",
+          body: JSON.stringify({
+            date: expense.date,
+            category: expense.category,
+            amount: expense.amount,
+            description: expense.description || null,
+          }),
+        });
+      }
+    }
+    localStorage.setItem(MIGRATION_KEY, "true");
+  }
 
   if (!dateInput.value) {
     dateInput.value = new Date().toISOString().slice(0, 10);
@@ -238,12 +313,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadExpenses() {
     try {
-      const expenses = await request(API_BASE);
+      const expenses = await request(`${API_BASE}/expenses`);
       saveStoredExpenses(expenses);
       renderSummary(expenses);
       renderExpenses(expenses);
       return;
     } catch (error) {
+      if (error.status === 401) {
+        signOut();
+        return;
+      }
       const localExpenses = getStoredExpenses();
       renderSummary(localExpenses);
       renderExpenses(localExpenses);
@@ -254,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function deleteExpense(id) {
     clearError();
     try {
-      await request(`${API_BASE}/${id}`, { method: "DELETE" });
+      await request(`${API_BASE}/expenses/${id}`, { method: "DELETE" });
       if (idInput.value === String(id)) {
         clearEditing();
       }
@@ -279,12 +358,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (editingId) {
-        await request(`${API_BASE}/${editingId}`, {
+        await request(`${API_BASE}/expenses/${editingId}`, {
           method: "PUT",
           body: JSON.stringify(data),
         });
       } else {
-        await request(API_BASE, {
+        await request(`${API_BASE}/expenses`, {
           method: "POST",
           body: JSON.stringify(data),
         });
@@ -318,5 +397,10 @@ document.addEventListener("DOMContentLoaded", () => {
     clearEditing();
   });
 
-  loadExpenses().catch((error) => showError(error.message));
+  if (localStorage.getItem(AUTH_TOKEN_KEY)) {
+    setAuthenticated(true);
+    loadExpenses().catch((error) => showError(error.message));
+  } else {
+    setAuthenticated(false);
+  }
 });
